@@ -5,5 +5,7 @@ namespace FormatFiles.Model.Interfaces
     {
         IStreamReader CustomStreamReader { get; }
         IFileStream CustomeFileStream { get; }
+        IHostingEnvironment CustomHostingEnvironment { get; }
+        IDirectoryInfo CustomDirectoryInfo { get; }
     }
 }

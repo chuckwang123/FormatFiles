@@ -11,6 +11,7 @@ namespace FormatFiles.Model.Models
         private SpaceFileParserFactory spaceFactory;
         private CommaFileParserFactory commaFactory;
         private PipFileParserFactory pipFactory;
+        private FileLister fileLister;
 
         public BootStrapper() : this(new FormatFileFactory()) { }
         public BootStrapper(IFactory factory)
@@ -20,11 +21,12 @@ namespace FormatFiles.Model.Models
             spaceFactory = new SpaceFileParserFactory(factory);
             commaFactory = new CommaFileParserFactory(factory);
             pipFactory = new PipFileParserFactory(factory);
+            fileLister = new FileLister(factory);
         }
 
         public void Sort(string sortWay)
         {
-            var files = FileLister.ListFiles();
+            var files = fileLister.ListFiles();
             foreach (var file in files)
             {
                 Console.WriteLine($"The file path is {file}");

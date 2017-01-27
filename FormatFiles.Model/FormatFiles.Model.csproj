@@ -49,14 +49,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IDirectoryInfo.cs" />
     <Compile Include="Interfaces\Ifactory.cs" />
     <Compile Include="Interfaces\IFileStream.cs" />
+    <Compile Include="Interfaces\IHostingEnvironment.cs" />
     <Compile Include="Interfaces\IStreamReader.cs" />
-    <Compile Include="Interfaces\IUserInput.cs" />
     <Compile Include="Models\BaseFileFormat.cs" />
     <Compile Include="Models\BootStrapper.cs" />
     <Compile Include="Models\BrowserJsonFormatter.cs" />
     <Compile Include="Models\CommaFileParserFactory.cs" />
+    <Compile Include="Models\CustomDirectoryInfo.cs" />
+    <Compile Include="Models\CustomHostingEnvironment.cs" />
     <Compile Include="Models\FileLister.cs" />
     <Compile Include="Models\FileParser.cs" />
     <Compile Include="Models\FileParserFactory.cs" />
@@ -68,7 +71,6 @@
     <Compile Include="Models\Result.cs" />
     <Compile Include="Models\SpaceFileParserFactory.cs" />
     <Compile Include="Models\StreamReaderWrapper.cs" />
-    <Compile Include="Models\UserInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

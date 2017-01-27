@@ -6,5 +6,7 @@ namespace FormatFiles.Model.Models
     {
         public IStreamReader CustomStreamReader => new StreamReaderWrapper();
         public IFileStream CustomeFileStream => new StreamReaderWrapper();
+        public IHostingEnvironment CustomHostingEnvironment => new CustomHostingEnvironment();
+        public IDirectoryInfo CustomDirectoryInfo => new CustomDirectoryInfo();
     }
 }

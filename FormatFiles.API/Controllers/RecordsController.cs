@@ -14,6 +14,7 @@ namespace FormatFiles.API.Controllers
         private SpaceFileParserFactory spaceFactory;
         private CommaFileParserFactory commaFactory;
         private PipFileParserFactory pipFactory;
+        private FileLister fileLister;
 
         public RecordsController() : this(new FormatFileFactory()) { }
         public RecordsController(IFactory factory)
@@ -23,11 +24,12 @@ namespace FormatFiles.API.Controllers
             spaceFactory = new SpaceFileParserFactory(factory);
             commaFactory = new CommaFileParserFactory(factory);
             pipFactory = new PipFileParserFactory(factory);
+            fileLister = new FileLister(factory);
         }
 
         private Result GetAllResult()
         {
-            var files = FileLister.ListWebFiles();
+            var files = fileLister.ListWebFiles();
             
             //Setup the Delimitor
             foreach (var file in files)
@@ -66,7 +68,7 @@ namespace FormatFiles.API.Controllers
                 throw new ArgumentNullException(nameof(person));
             }
 
-            var files = FileLister.ListWebFiles();
+            var files = fileLister.ListWebFiles();
 
             //Setup the Delimitor
             foreach (var file in files)
