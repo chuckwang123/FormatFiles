@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
-using FluentAssert;
-using FormatFiles.Model.Interfaces;
-using FormatFiles.Model.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace FormatFiles.Console.UnitTest
+namespace FormatFiles.API.UnitTest
 {
-    [ExcludeFromCodeCoverage]
     [TestClass]
-    public class FileParserUnitTests
+    public class RecordsControllerUnitTests
     {
         private FileParser m_fileParser;
         private Mock<IStreamReader> m_streamReader;
@@ -29,24 +24,9 @@ namespace FormatFiles.Console.UnitTest
                 StreamReader = m_streamReader.Object
             };
         }
-
         [TestMethod]
-        public void ParseFile_WithCorrectData_ShouldReturnListofPeople()
+        public void TestMethod1()
         {
-            var result=  m_fileParser.ParseFile("Comma");
-            result.Count.ShouldBeEqualTo(1);
-            result[0].LastName.ShouldBeEqualTo("Foster");
-            result[0].FirstName.ShouldBeEqualTo("Thomas");
-            result[0].Gender.ShouldBeEqualTo("Male");
-            result[0].FavoriteColor.ShouldBeEqualTo("Khaki");
-            result[0].DateofBirth.ShouldBeEqualTo(Convert.ToDateTime("3/1/1836"));
-        }
-
-        [TestMethod]
-        public void DetermineDelimiterType_Should_ReturnComma()
-        {
-            var result = m_fileParser.DetermineDelimiterType();
-            result.ShouldBeEqualTo("Comma");
         }
     }
 }

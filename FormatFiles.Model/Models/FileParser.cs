@@ -1,82 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using FormatFiles.Console.Interfaces;
+using FormatFiles.Model.Interfaces;
 
 namespace FormatFiles.Model.Models
 {
     public class FileParser
     {
-        private TextReader _textReader;
-        public IFileOpener fileOpener;
-        
-        public FileParser(TextReader reader)
+        public IStreamReader StreamReader;
+        private readonly string _filePath;
+        public FileParser(string filePath)
         {
-            _textReader = reader;
-            fileOpener = new FIleOpener();
+            StreamReader = new StreamReaderWrapper();
+            _filePath = filePath;
         }
 
-        public List<Person> ParseFile(string filePath, char delimitor)
+        public List<Person> ParseFile(string type)
         {
+            var delimitor = '@';
+            switch (type)
+            {
+                case "Space":
+                    delimitor = ' ';
+                    break;
+                case "Pip":
+                    delimitor = '|';
+                    break;
+                case "Comma":
+                    delimitor = ',';
+                    break;
+            }
+            
+            StreamReader.SetupStreamReaderWrapper(_filePath);
             var listOfObject = new List<Person>();
             var provider = CultureInfo.InvariantCulture;
             try
             {   // Open the text file using a stream reader.
-                using ( _textReader = fileOpener.OpenFile(filePath))
+                StreamReader.ReadLine();
+                string line;
+                while ((line = StreamReader.ReadLine()) != null)
                 {
-                    // Skip the header
-                    _textReader.ReadLine();
-                    string line;
-                    while ((line = _textReader.ReadLine()) != null)
+                    var words = line.Split(delimitor);
+                    listOfObject.Add(new Person
                     {
-                        var words = line.Split(delimitor);
-                        listOfObject.Add(new Person
-                        {
-                            LastName = words[0],
-                            FirstName = words[1],
-                            Gender = words[2],
-                            FavoriteColor = words[3],
-                            DateofBirth = DateTime.ParseExact(words[4], "M/d/yyyy", provider)
-                        });
-                    }
+                        LastName = words[0],
+                        FirstName = words[1],
+                        Gender = words[2],
+                        FavoriteColor = words[3],
+                        DateofBirth = DateTime.ParseExact(words[4], "M/d/yyyy", provider)
+                    });
                 }
             }
             catch (Exception e)
             {
-                System.Console.WriteLine($"The file {filePath}could not be read:");
-                System.Console.WriteLine(e.Message);
+                Console.WriteLine($"The file {_filePath}could not be read:");
+                Console.WriteLine(e.Message);
             }
 
             return listOfObject;
         }
 
-        private string ReadFile(string filePath)
+        private string ReadFile()
         {
             try
             {   // Open the text file using a stream reader.
-                using (_textReader = fileOpener.OpenFile(filePath))
-                {
-                    // Read the stream to a string, and write the string to the console.
-                    return _textReader.ReadToEnd();
-                }
+                StreamReader.SetupStreamReaderWrapper(_filePath);
+                return StreamReader.ReadtoEnd();
             }
             catch (Exception e)
             {
-                System.Console.WriteLine($"The file {filePath}could not be read:");
-                System.Console.WriteLine(e.Message);
+                Console.WriteLine($"The file {_filePath}could not be read:");
+                Console.WriteLine(e.Message);
             }
 
             return "";
         }
 
-        public string DetermineDelimiterType(string filePath)
+        public string DetermineDelimiterType()
         {
             var delimiters = new List<char> { ' ', ',', '|' };
             foreach (var c in delimiters)
             {
-                var num = ReadFile(filePath).Count(t => t == c);
+                var num = ReadFile().Count(t => t == c);
                 if (num <= 0) continue;
 
                 switch (c)

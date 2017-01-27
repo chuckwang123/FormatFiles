@@ -1,7 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FormatFiles.Interfaces;
 using FormatFiles.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,61 +12,46 @@ namespace FormatFiles.Controllers
     public class RecordsController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-
-        public RecordsController(IHostingEnvironment hostingEnvironment)
+        public RecordsController() : this(new FormatFileFactory()) { }
+        public RecordsController(IFactory factory)
         {
-            _hostingEnvironment = hostingEnvironment;
+            if (factory == null) { throw new ArgumentNullException(nameof(factory)); }
+            _hostingEnvironment = factory.HostingEnvironment;
         }
 
         private Result GetAllResult()
         {
             var files = FileLister.ListFiles(_hostingEnvironment);
-            var fileParser = new FileParser();
+            var spaceFactory = new SpaceFileParserFactory();
+            var commaFactory = new CommaFileParserFactory();
+            var pipFactory = new PipFileParserFactory();
 
-            var spaceFilePath = "";
-            var commaFilePath = "";
-            var pipFilePath = "";
             //Setup the Delimitor
             foreach (var file in files)
             {
-                var result = fileParser.DetermineDelimiterType(file);
+                var tempParser = new FileParser(file);
+                var result = tempParser.DetermineDelimiterType();
                 switch (result)
                 {
                     case "Space":
-                        spaceFilePath = file;
+                        spaceFactory.Setup(tempParser);
                         break;
                     case "Comma":
-                        commaFilePath = file;
+                        commaFactory.Setup(tempParser);
                         break;
                     case "Pip":
-                        pipFilePath = file;
+                        pipFactory.Setup(tempParser);
                         break;
                     default:
                         throw new InvalidDataException("The data is incorrect Delimited");
                 }
             }
-            var dataList_space = new List<Person>();
-            var dataList_comma = new List<Person>();
-            var dataList_pip = new List<Person>();
-            //Parse the files
-            if (!string.IsNullOrEmpty(pipFilePath))
-            {
-                dataList_pip = fileParser.ParseFile(pipFilePath, '|');
-            }
-            if (!string.IsNullOrEmpty(commaFilePath))
-            {
-                dataList_comma = fileParser.ParseFile(commaFilePath, ',');
-            }
-            if (!string.IsNullOrEmpty(spaceFilePath))
-            {
-                dataList_space = fileParser.ParseFile(spaceFilePath, ' ');
-            }
 
             return new Result
             {
-                commaResult = dataList_comma,
-                pipResult = dataList_pip,
-                spaceResult = dataList_space
+                commaResult = commaFactory.OriData,
+                pipResult = pipFactory.OriData,
+                spaceResult = spaceFactory.OriData
             };
         }
 
@@ -79,56 +64,34 @@ namespace FormatFiles.Controllers
             }
 
             var files = FileLister.ListFiles(_hostingEnvironment);
-            var fileParser = new FileParser();
+            var spaceFactory = new SpaceFileParserFactory();
+            var commaFactory = new CommaFileParserFactory();
+            var pipFactory = new PipFileParserFactory();
 
-            var spaceFilePath = "";
-            var commaFilePath = "";
-            var pipFilePath = "";
             //Setup the Delimitor
             foreach (var file in files)
             {
-                var result = fileParser.DetermineDelimiterType(file);
+                var tempParser = new FileParser(file);
+                var result = tempParser.DetermineDelimiterType();
                 switch (result)
                 {
                     case "Space":
-                        spaceFilePath = file;
+                        spaceFactory.Setup(tempParser);
                         break;
                     case "Comma":
-                        commaFilePath = file;
+                        commaFactory.Setup(tempParser);
                         break;
                     case "Pip":
-                        pipFilePath = file;
+                        pipFactory.Setup(tempParser);
                         break;
                     default:
                         throw new InvalidDataException("The data is incorrect Delimited");
                 }
             }
 
-            if (!string.IsNullOrEmpty(pipFilePath))
-            {
-                using (var pipWriter = fileParser.CreateStreamWriter(pipFilePath))
-                {
-                    pipWriter.WriteLine(
-                    $"{person.LastName}|{person.FirstName}|{person.Gender}|{person.FavoriteColor}|{person.DateofBirth:M/d/yyyy}");
-                }
-            }
-            if (!string.IsNullOrEmpty(commaFilePath))
-            {
-                using (var commaWriter = fileParser.CreateStreamWriter(commaFilePath))
-                {
-                    commaWriter.WriteLine(
-                    $"{person.LastName},{person.FirstName},{person.Gender},{person.FavoriteColor},{person.DateofBirth:M/d/yyyy}");
-                }
-            }
-            if (!string.IsNullOrEmpty(spaceFilePath))
-            {
-                using (var spaceWriter = fileParser.CreateStreamWriter(spaceFilePath))
-                {
-                    spaceWriter.WriteLine(
-                   $"{person.LastName} {person.FirstName} {person.Gender} {person.FavoriteColor} {person.DateofBirth:M/d/yyyy}");
-                }
-               
-            }
+            pipFactory.WriteRecord(person);
+            commaFactory.WriteRecord(person);
+            spaceFactory.WriteRecord(person);
         }
 
         [HttpGet, Route("gender")]

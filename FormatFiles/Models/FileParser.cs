@@ -9,68 +9,82 @@ namespace FormatFiles.Models
 {
     public class FileParser
     {
-        public IFileOpener fileOpener;
-        
-        public FileParser()
-        { 
-            fileOpener = new FIleOpener();
+        private readonly IStreamReader StreamReader;
+        private readonly string _filePath;
+        public FileParser(string filePath)
+        {
+            StreamReader = new StreamReaderWrapper(filePath);
+            _filePath = filePath;
         }
 
-        public List<Person> ParseFile(string filePath, char delimitor)
+        public List<Person> ParseFile(string type)
         {
+            var delimitor = '@';
+            switch (type)
+            {
+                case "Space":
+                    delimitor = ' ';
+                    break;
+                case "Pip":
+                    delimitor = '|';
+                    break;
+                case "Comma":
+                    delimitor = ',';
+                    break;
+            }
+
+            StreamReader.SetupStreamReaderWrapper();
             var listOfObject = new List<Person>();
             var provider = CultureInfo.InvariantCulture;
             try
             {   // Open the text file using a stream reader.
-                using ( var _textReader = fileOpener.OpenFile(filePath))
+                StreamReader.ReadLine();
+                string line;
+                while ((line = StreamReader.ReadLine()) != null)
                 {
-                    // Skip the header
-                    _textReader.ReadLine();
-                    string line;
-                    while ((line = _textReader.ReadLine()) != null)
+                    var words = line.Split(delimitor);
+                    listOfObject.Add(new Person
                     {
-                        var words = line.Split(delimitor);
-                        listOfObject.Add(new Person
-                        {
-                            LastName = words[0],
-                            FirstName = words[1],
-                            Gender = words[2],
-                            FavoriteColor = words[3],
-                            DateofBirth = DateTime.ParseExact(words[4], "M/d/yyyy", provider)
-                        });
-                    }
+                        LastName = words[0],
+                        FirstName = words[1],
+                        Gender = words[2],
+                        FavoriteColor = words[3],
+                        DateofBirth = DateTime.ParseExact(words[4], "M/d/yyyy", provider)
+                    });
                 }
             }
             catch (Exception e)
             {
-                throw e;
+                Console.WriteLine($"The file {_filePath}could not be read:");
+                Console.WriteLine(e.Message);
             }
-
+            StreamReader.Dispose();
             return listOfObject;
         }
 
-        private string ReadFile(string filePath)
+        private string ReadFile()
         {
             try
             {   // Open the text file using a stream reader.
-                using (var _textReader = fileOpener.OpenFile(filePath))
-                {
-                    // Read the stream to a string, and write the string to the console.
-                    return _textReader.ReadToEnd();
-                }
+                return StreamReader.ReadtoEnd();
             }
             catch (Exception e)
             {
-                throw e;
+                Console.WriteLine($"The file {_filePath}could not be read:");
+                Console.WriteLine(e.Message);
             }
+
+            return "";
         }
 
-        public string DetermineDelimiterType(string filePath)
+        public string DetermineDelimiterType()
         {
             var delimiters = new List<char> { ' ', ',', '|' };
+            var line = ReadFile();
+            StreamReader.Dispose();
             foreach (var c in delimiters)
             {
-                var num = ReadFile(filePath).Count(t => t == c);
+                var num = line.Count(t => t == c);
                 if (num <= 0) continue;
 
                 switch (c)
@@ -87,9 +101,9 @@ namespace FormatFiles.Models
             return "Error";
         }
 
-        public StreamWriter CreateStreamWriter(string filePath)
+        public StreamWriter CreateStreamWriter()
         {
-            return File.AppendText(filePath);
+            return File.AppendText(_filePath);
         }
     }
 }

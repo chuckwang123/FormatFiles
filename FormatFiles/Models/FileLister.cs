@@ -1,11 +1,12 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
 
 namespace FormatFiles.Models
 {
     public static class FileLister
     {
-        public static string[] ListFiles(IHostingEnvironment _hostingEnvironment)
+        public static IEnumerable<string> ListFiles(IHostingEnvironment _hostingEnvironment)
         {
             var contentRootPath = _hostingEnvironment.ContentRootPath;
             const string dataFolder = "DataFolder";
