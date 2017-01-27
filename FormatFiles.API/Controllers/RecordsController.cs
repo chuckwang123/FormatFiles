@@ -10,23 +10,29 @@ namespace FormatFiles.API.Controllers
     [RoutePrefix("api/Records")]
     public class RecordsController : ApiController
     {
+        private FileParser tempParser;
+        private SpaceFileParserFactory spaceFactory;
+        private CommaFileParserFactory commaFactory;
+        private PipFileParserFactory pipFactory;
+
         public RecordsController() : this(new FormatFileFactory()) { }
         public RecordsController(IFactory factory)
         {
             if (factory == null) { throw new ArgumentNullException(nameof(factory)); }
+            tempParser = new FileParser(factory);
+            spaceFactory = new SpaceFileParserFactory(factory);
+            commaFactory = new CommaFileParserFactory(factory);
+            pipFactory = new PipFileParserFactory(factory);
         }
 
         private Result GetAllResult()
         {
             var files = FileLister.ListWebFiles();
-            var spaceFactory = new SpaceFileParserFactory();
-            var commaFactory = new CommaFileParserFactory();
-            var pipFactory = new PipFileParserFactory();
-
+            
             //Setup the Delimitor
             foreach (var file in files)
             {
-                var tempParser = new FileParser(file);
+                tempParser.SetupPath(file);
                 var result = tempParser.DetermineDelimiterType();
                 switch (result)
                 {
@@ -61,14 +67,11 @@ namespace FormatFiles.API.Controllers
             }
 
             var files = FileLister.ListWebFiles();
-            var spaceFactory = new SpaceFileParserFactory();
-            var commaFactory = new CommaFileParserFactory();
-            var pipFactory = new PipFileParserFactory();
 
             //Setup the Delimitor
             foreach (var file in files)
             {
-                var tempParser = new FileParser(file);
+                tempParser.SetupPath(file);
                 var result = tempParser.DetermineDelimiterType();
                 switch (result)
                 {

@@ -8,5 +8,6 @@ namespace FormatFiles.Model.Interfaces
         string ReadtoEnd();
         StreamReader SetupStreamReaderWrapper();
         void Dispose();
+        void SetPath(string _path);
     }
 }

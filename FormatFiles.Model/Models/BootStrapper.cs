@@ -1,11 +1,27 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using FormatFiles.Model.Interfaces;
 
 namespace FormatFiles.Model.Models
 {
     public class BootStrapper
     {
+        private FileParser tempParser;
+        private SpaceFileParserFactory spaceFactory;
+        private CommaFileParserFactory commaFactory;
+        private PipFileParserFactory pipFactory;
+
+        public BootStrapper() : this(new FormatFileFactory()) { }
+        public BootStrapper(IFactory factory)
+        {
+            if (factory == null) { throw new ArgumentNullException(nameof(factory)); }
+            tempParser = new FileParser(factory);
+            spaceFactory = new SpaceFileParserFactory(factory);
+            commaFactory = new CommaFileParserFactory(factory);
+            pipFactory = new PipFileParserFactory(factory);
+        }
+
         public void Sort(string sortWay)
         {
             var files = FileLister.ListFiles();
@@ -14,15 +30,10 @@ namespace FormatFiles.Model.Models
                 Console.WriteLine($"The file path is {file}");
             }
 
-            //Setup the Lists and path
-            var spaceFactory = new SpaceFileParserFactory();
-            var commaFactory = new CommaFileParserFactory();
-            var pipFactory = new PipFileParserFactory();
-
             //Setup the Delimitor and parse
             foreach (var file in files)
             {
-                var tempParser = new FileParser(file);
+                tempParser.SetupPath(file);
                 var result = tempParser.DetermineDelimiterType();
                 switch (result)
                 {

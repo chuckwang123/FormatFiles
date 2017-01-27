@@ -1,7 +1,13 @@
-﻿namespace FormatFiles.Model.Models
+﻿using FormatFiles.Model.Interfaces;
+
+namespace FormatFiles.Model.Models
 {
     public class CommaFileParserFactory: FileParserFactory
     {
+        public CommaFileParserFactory(IFactory factory) : base(factory)
+        {
+        }
+
         protected override string Type { get; set; } = "Comma";
         public override void WriteRecord(Person person)
         {
@@ -10,6 +16,11 @@
                 commaWriter.WriteLine(
                     $"{person.LastName},{person.FirstName},{person.Gender},{person.FavoriteColor},{person.DateofBirth:M/d/yyyy}");
             }
+        }
+        public override void Setup(FileParser fileParser)
+        {
+            this.FileParser = new FileParser(fileParser);
+            OriData = FileParser.ParseFile(Type);
         }
     }
 }

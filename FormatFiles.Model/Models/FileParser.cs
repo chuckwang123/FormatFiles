@@ -10,13 +10,23 @@ namespace FormatFiles.Model.Models
     public class FileParser
     {
         private readonly IStreamReader StreamReader;
-        private readonly string _filePath;
-        public FileParser(string filePath)
+        private string _filePath;
+        public FileParser(IFactory factory)
         {
-            StreamReader = new StreamReaderWrapper(filePath);
-            _filePath = filePath;
+            if (factory == null) { throw new ArgumentNullException(nameof(factory)); }
+            StreamReader = factory.CustomStreamReader;
         }
 
+        public FileParser(FileParser fileParser)
+        {
+            StreamReader = fileParser.StreamReader;
+            _filePath = fileParser._filePath;
+        }
+
+        public void SetupPath(string filepath)
+        {
+            _filePath = filepath;
+        }
         public List<Person> ParseFile(string type)
         {
             var delimitor = '@';
@@ -33,6 +43,7 @@ namespace FormatFiles.Model.Models
                     break;
             }
 
+            StreamReader.SetPath(_filePath);
             StreamReader.SetupStreamReaderWrapper();
             var listOfObject = new List<Person>();
             var provider = CultureInfo.InvariantCulture;
@@ -66,6 +77,7 @@ namespace FormatFiles.Model.Models
         {
             try
             {   // Open the text file using a stream reader.
+                StreamReader.SetPath(_filePath);
                 return StreamReader.ReadtoEnd();
             }
             catch (Exception e)

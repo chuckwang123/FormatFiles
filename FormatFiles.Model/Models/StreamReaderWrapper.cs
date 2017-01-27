@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using FormatFiles.Model.Interfaces;
 
 namespace FormatFiles.Model.Models
@@ -6,12 +7,16 @@ namespace FormatFiles.Model.Models
     public class StreamReaderWrapper : IStreamReader, IFileStream
     {
         private StreamReader _streamReader;
-        private readonly string path;
+        private string path;
 
-        public StreamReaderWrapper(string _path)
+        public StreamReaderWrapper(){}
+
+        public void SetPath(string _path)
         {
+            if (string.IsNullOrEmpty(_path)) { throw new ArgumentNullException(nameof(_path)); }
             path = _path;
         }
+
         public StreamReader SetupStreamReaderWrapper()
         {
             _streamReader = new StreamReader(OpenFile(), true);

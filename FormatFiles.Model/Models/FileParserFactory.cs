@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FormatFiles.Model.Interfaces;
 
 namespace FormatFiles.Model.Models
 {
@@ -10,13 +11,13 @@ namespace FormatFiles.Model.Models
 
         protected abstract string Type { get; set; }
 
-        protected FileParserFactory() { }
-        
-        public void Setup(FileParser fileParser)
+        protected FileParserFactory(IFactory factory)
         {
-            FileParser = fileParser;
-            OriData = FileParser.ParseFile(Type);
+            FileParser = new FileParser(factory);
         }
+
+        public abstract void Setup(FileParser fileParser);
+        
         public abstract void WriteRecord(Person person);
     }
 }
