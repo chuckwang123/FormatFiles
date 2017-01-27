@@ -185,7 +185,7 @@ namespace FormatFiles.API.UnitTest
         public void SortByBirth_theRecord_ShouldSort()
         {
             SetupBirthStream();
-            var result = m_recordsController.SortByGender();
+            var result = m_recordsController.SortByBirth();
             var expectCommaList = new List<Person>
             {
                 new Person
@@ -250,7 +250,7 @@ namespace FormatFiles.API.UnitTest
         public void SortByName_theRecord_ShouldSort()
         {
             SetupLastNameStream();
-            var result = m_recordsController.SortByGender();
+            var result = m_recordsController.SortByName();
             var expectCommaList = new List<Person>
             {
                 new Person
@@ -310,5 +310,7 @@ namespace FormatFiles.API.UnitTest
                 }
             });
         }
+
+
     }
 }
