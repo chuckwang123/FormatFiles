@@ -6,6 +6,7 @@ namespace FormatFiles.Model.Interfaces
     {
         string ReadLine();
         string ReadtoEnd();
-        StreamReader SetupStreamReaderWrapper(string path);
+        StreamReader SetupStreamReaderWrapper();
+        void Dispose();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using FormatFiles.Model.Interfaces;
 
@@ -8,11 +9,11 @@ namespace FormatFiles.Model.Models
 {
     public class FileParser
     {
-        public IStreamReader StreamReader;
+        private readonly IStreamReader StreamReader;
         private readonly string _filePath;
         public FileParser(string filePath)
         {
-            StreamReader = new StreamReaderWrapper();
+            StreamReader = new StreamReaderWrapper(filePath);
             _filePath = filePath;
         }
 
@@ -31,8 +32,8 @@ namespace FormatFiles.Model.Models
                     delimitor = ',';
                     break;
             }
-            
-            StreamReader.SetupStreamReaderWrapper(_filePath);
+
+            StreamReader.SetupStreamReaderWrapper();
             var listOfObject = new List<Person>();
             var provider = CultureInfo.InvariantCulture;
             try
@@ -57,7 +58,7 @@ namespace FormatFiles.Model.Models
                 Console.WriteLine($"The file {_filePath}could not be read:");
                 Console.WriteLine(e.Message);
             }
-
+            StreamReader.Dispose();
             return listOfObject;
         }
 
@@ -65,7 +66,6 @@ namespace FormatFiles.Model.Models
         {
             try
             {   // Open the text file using a stream reader.
-                StreamReader.SetupStreamReaderWrapper(_filePath);
                 return StreamReader.ReadtoEnd();
             }
             catch (Exception e)
@@ -80,9 +80,11 @@ namespace FormatFiles.Model.Models
         public string DetermineDelimiterType()
         {
             var delimiters = new List<char> { ' ', ',', '|' };
+            var line = ReadFile();
+            StreamReader.Dispose();
             foreach (var c in delimiters)
             {
-                var num = ReadFile().Count(t => t == c);
+                var num = line.Count(t => t == c);
                 if (num <= 0) continue;
 
                 switch (c)
@@ -97,6 +99,11 @@ namespace FormatFiles.Model.Models
                 }
             }
             return "Error";
+        }
+
+        public StreamWriter CreateStreamWriter()
+        {
+            return File.AppendText(_filePath);
         }
     }
 }

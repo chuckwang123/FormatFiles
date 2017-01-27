@@ -4,7 +4,7 @@ namespace FormatFiles.Model.Models
 {
     public abstract class FileParserFactory
     {
-        private FileParser FileParser { get; set; }
+        protected FileParser FileParser { get; set; }
         public List<Person> OriData { get; set; } = new List<Person>();
         public List<Person> ResultData { get; set; } = new List<Person>();
 
@@ -17,5 +17,6 @@ namespace FormatFiles.Model.Models
             FileParser = fileParser;
             OriData = FileParser.ParseFile(Type);
         }
+        public abstract void WriteRecord(Person person);
     }
 }

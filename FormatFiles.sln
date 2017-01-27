@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormatFiles.Console.UnitTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormatFiles.API.UnitTest", "FormatFiles.API.UnitTest\FormatFiles.API.UnitTest.csproj", "{8642DCA6-7E9B-4476-AE49-7F4A7B8BAFEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormatFiles.API", "FormatFiles.API\FormatFiles.API.csproj", "{7B4CB866-5D5F-485A-AA12-60AE65E72417}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{8642DCA6-7E9B-4476-AE49-7F4A7B8BAFEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8642DCA6-7E9B-4476-AE49-7F4A7B8BAFEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8642DCA6-7E9B-4476-AE49-7F4A7B8BAFEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B4CB866-5D5F-485A-AA12-60AE65E72417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B4CB866-5D5F-485A-AA12-60AE65E72417}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B4CB866-5D5F-485A-AA12-60AE65E72417}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B4CB866-5D5F-485A-AA12-60AE65E72417}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -23,5 +23,24 @@ namespace FormatFiles.Model.Models
             //List the file under the folder
             return Directory.GetFiles(filePath);
         }
+
+        public static string[] ListWebFiles()
+        {
+            const string dataFolder = "DataFolder";
+            var projectPath = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Data");
+            var folderPath = Directory.GetParent(projectPath).Parent;
+            if (folderPath == null)
+            {
+                System.Console.WriteLine("The base folder is not exist");
+                return null;
+            }
+
+            //get the folder name
+            var filePath = Path.Combine(folderPath.FullName, dataFolder);
+            System.Console.WriteLine($"The folder path is {filePath}");
+
+            //List the file under the folder
+            return Directory.GetFiles(filePath);
+        }
     }
 }

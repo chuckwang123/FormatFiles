@@ -30,8 +30,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,21 +49,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\Ifactory.cs" />
+    <Compile Include="Interfaces\IFileStream.cs" />
     <Compile Include="Interfaces\IStreamReader.cs" />
     <Compile Include="Interfaces\IUserInput.cs" />
     <Compile Include="Models\BaseFileFormat.cs" />
     <Compile Include="Models\BootStrapper.cs" />
+    <Compile Include="Models\BrowserJsonFormatter.cs" />
     <Compile Include="Models\CommaFileParserFactory.cs" />
     <Compile Include="Models\FileLister.cs" />
     <Compile Include="Models\FileParser.cs" />
     <Compile Include="Models\FileParserFactory.cs" />
+    <Compile Include="Models\FormatFileFactory.cs" />
     <Compile Include="Models\Helper.cs" />
+    <Compile Include="Models\PeopleSorter.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\PipFileParserFactory.cs" />
+    <Compile Include="Models\Result.cs" />
     <Compile Include="Models\SpaceFileParserFactory.cs" />
     <Compile Include="Models\StreamReaderWrapper.cs" />
     <Compile Include="Models\UserInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
