@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
-using FormatFiles.Model.Exception;
 using FormatFiles.Model.Interfaces;
 using FormatFiles.Model.Models;
 
@@ -16,6 +19,7 @@ namespace FormatFiles.API.Controllers
         private readonly CommaFileParserFactory _commaFactory;
         private readonly PipFileParserFactory _pipFactory;
         private readonly FileLister _fileLister;
+        private List<Task> _taskList = new List<Task>();
 
         public RecordsController() : this(new FormatFileFactory()) { }
         public RecordsController(IFactory factory)
@@ -62,11 +66,11 @@ namespace FormatFiles.API.Controllers
         }
 
         [Route("")]
-        public void Post(Person person)
+        public async Task<HttpResponseMessage> Post(Person person)
         {
             if (person == null)
             {
-                throw new ArgumentNullException(nameof(person));
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, "the person is null"));
             }
 
             var files = _fileLister.ListWebFiles();
@@ -88,19 +92,22 @@ namespace FormatFiles.API.Controllers
                         _pipFactory.Setup(_tempParser);
                         break;
                     default:
-                        throw new InvalidDataException("The data is incorrect Delimited");
+                        throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, "The data is incorrect Delimited"));
                 }
             }
 
             try
             {
-                _pipFactory.WriteRecord(person);
-                _commaFactory.WriteRecord(person);
-                _spaceFactory.WriteRecord(person);
+                var pipTask = _pipFactory.WriteRecord(person);
+                var commaTask = _commaFactory.WriteRecord(person);
+                var spaceTask = _spaceFactory.WriteRecord(person);
+
+                await Task.WhenAll(commaTask, pipTask, spaceTask);
+                return Request.CreateResponse(HttpStatusCode.OK, "The data is updated successed");
             }
             catch (Exception e)
             {
-                throw new FormatFilesException(e.Message);
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.BadRequest, e.Message));
             }
             
         }

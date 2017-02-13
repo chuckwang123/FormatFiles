@@ -1,4 +1,5 @@
-﻿using FormatFiles.Model.Interfaces;
+﻿using System.Threading.Tasks;
+using FormatFiles.Model.Interfaces;
 
 namespace FormatFiles.Model.Models
 {
@@ -9,7 +10,7 @@ namespace FormatFiles.Model.Models
         }
 
         protected override string Type { get; set; } = "Pip";
-        public override void WriteRecord(Person person)
+        public override async Task WriteRecord(Person person)
         {
             using (var pipWriter = FileParser.CreateStreamWriter())
             {

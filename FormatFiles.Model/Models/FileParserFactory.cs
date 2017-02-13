@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FormatFiles.Model.Interfaces;
 
 namespace FormatFiles.Model.Models
@@ -18,6 +19,6 @@ namespace FormatFiles.Model.Models
 
         public abstract void Setup(FileParser fileParser);
         
-        public abstract void WriteRecord(Person person);
+        public abstract Task WriteRecord(Person person);
     }
 }
