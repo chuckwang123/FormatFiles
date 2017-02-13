@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Web.Http;
+using FormatFiles.Model.Exception;
 using FormatFiles.Model.Interfaces;
 using FormatFiles.Model.Models;
 
@@ -91,9 +92,17 @@ namespace FormatFiles.API.Controllers
                 }
             }
 
-            _pipFactory.WriteRecord(person);
-            _commaFactory.WriteRecord(person);
-            _spaceFactory.WriteRecord(person);
+            try
+            {
+                _pipFactory.WriteRecord(person);
+                _commaFactory.WriteRecord(person);
+                _spaceFactory.WriteRecord(person);
+            }
+            catch (Exception e)
+            {
+                throw new FormatFilesException(e.Message);
+            }
+            
         }
 
         [HttpGet, Route("gender")]

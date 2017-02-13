@@ -64,7 +64,7 @@ namespace FormatFiles.Model.Models
                     });
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 Console.WriteLine($"The file {_filePath}could not be read:");
                 Console.WriteLine(e.Message);
@@ -80,7 +80,7 @@ namespace FormatFiles.Model.Models
                 StreamReader.SetPath(_filePath);
                 return StreamReader.ReadtoEnd();
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 Console.WriteLine($"The file {_filePath}could not be read:");
                 Console.WriteLine(e.Message);

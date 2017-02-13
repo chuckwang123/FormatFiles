@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exception\FormatFilesException.cs" />
     <Compile Include="Interfaces\IDirectoryInfo.cs" />
     <Compile Include="Interfaces\Ifactory.cs" />
     <Compile Include="Interfaces\IFileStream.cs" />
