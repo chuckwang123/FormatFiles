@@ -10,42 +10,42 @@ namespace FormatFiles.API.Controllers
     [RoutePrefix("api/Records")]
     public class RecordsController : ApiController
     {
-        private FileParser tempParser;
-        private SpaceFileParserFactory spaceFactory;
-        private CommaFileParserFactory commaFactory;
-        private PipFileParserFactory pipFactory;
-        private FileLister fileLister;
+        private readonly FileParser _tempParser;
+        private readonly SpaceFileParserFactory _spaceFactory;
+        private readonly CommaFileParserFactory _commaFactory;
+        private readonly PipFileParserFactory _pipFactory;
+        private readonly FileLister _fileLister;
 
         public RecordsController() : this(new FormatFileFactory()) { }
         public RecordsController(IFactory factory)
         {
             if (factory == null) { throw new ArgumentNullException(nameof(factory)); }
-            tempParser = new FileParser(factory);
-            spaceFactory = new SpaceFileParserFactory(factory);
-            commaFactory = new CommaFileParserFactory(factory);
-            pipFactory = new PipFileParserFactory(factory);
-            fileLister = new FileLister(factory);
+            _tempParser = new FileParser(factory);
+            _spaceFactory = new SpaceFileParserFactory(factory);
+            _commaFactory = new CommaFileParserFactory(factory);
+            _pipFactory = new PipFileParserFactory(factory);
+            _fileLister = new FileLister(factory);
         }
 
         private Result GetAllResult()
         {
-            var files = fileLister.ListWebFiles();
+            var files = _fileLister.ListWebFiles();
             
             //Setup the Delimitor
             foreach (var file in files)
             {
-                tempParser.SetupPath(file);
-                var result = tempParser.DetermineDelimiterType();
+                _tempParser.SetupPath(file);
+                var result = _tempParser.DetermineDelimiterType();
                 switch (result)
                 {
                     case "Space":
-                        spaceFactory.Setup(tempParser);
+                        _spaceFactory.Setup(_tempParser);
                         break;
                     case "Comma":
-                        commaFactory.Setup(tempParser);
+                        _commaFactory.Setup(_tempParser);
                         break;
                     case "Pip":
-                        pipFactory.Setup(tempParser);
+                        _pipFactory.Setup(_tempParser);
                         break;
                     default:
                         throw new InvalidDataException("The data is incorrect Delimited");
@@ -54,9 +54,9 @@ namespace FormatFiles.API.Controllers
 
             return new Result
             {
-                commaResult = commaFactory.OriData,
-                pipResult = pipFactory.OriData,
-                spaceResult = spaceFactory.OriData
+                commaResult = _commaFactory.OriData,
+                pipResult = _pipFactory.OriData,
+                spaceResult = _spaceFactory.OriData
             };
         }
 
@@ -68,32 +68,32 @@ namespace FormatFiles.API.Controllers
                 throw new ArgumentNullException(nameof(person));
             }
 
-            var files = fileLister.ListWebFiles();
+            var files = _fileLister.ListWebFiles();
 
             //Setup the Delimitor
             foreach (var file in files)
             {
-                tempParser.SetupPath(file);
-                var result = tempParser.DetermineDelimiterType();
+                _tempParser.SetupPath(file);
+                var result = _tempParser.DetermineDelimiterType();
                 switch (result)
                 {
                     case "Space":
-                        spaceFactory.Setup(tempParser);
+                        _spaceFactory.Setup(_tempParser);
                         break;
                     case "Comma":
-                        commaFactory.Setup(tempParser);
+                        _commaFactory.Setup(_tempParser);
                         break;
                     case "Pip":
-                        pipFactory.Setup(tempParser);
+                        _pipFactory.Setup(_tempParser);
                         break;
                     default:
                         throw new InvalidDataException("The data is incorrect Delimited");
                 }
             }
 
-            pipFactory.WriteRecord(person);
-            commaFactory.WriteRecord(person);
-            spaceFactory.WriteRecord(person);
+            _pipFactory.WriteRecord(person);
+            _commaFactory.WriteRecord(person);
+            _spaceFactory.WriteRecord(person);
         }
 
         [HttpGet, Route("gender")]
