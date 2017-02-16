@@ -103,6 +103,10 @@ namespace FormatFiles.API.Controllers
                 var spaceTask = _spaceFactory.WriteRecord(person);
 
                 await Task.WhenAll(commaTask, pipTask, spaceTask);
+                if (pipTask.Result == 0 && commaTask.Result == 0 && spaceTask.Result ==0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NoContent, "There is no data has been updated");
+                }
                 return Request.CreateResponse(HttpStatusCode.OK, "The data is updated successed");
             }
             catch (Exception e)

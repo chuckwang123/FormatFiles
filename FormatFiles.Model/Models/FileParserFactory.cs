@@ -19,6 +19,6 @@ namespace FormatFiles.Model.Models
 
         public abstract void Setup(FileParser fileParser);
         
-        public abstract Task WriteRecord(Person person);
+        public abstract Task<int> WriteRecord(Person person);
     }
 }
